@@ -8,12 +8,11 @@ import java.util.List;
 /**
  * @Author Alex Zheng
  * @Date 2021/2/23 20:34
- * @Annotation
+ * @Annotation 新的Dao
  */
-public class HelloDaoImpl implements HelloDao {
+public class HelloDaoImpl2 implements HelloDao {
     @Override
     public List<String> findAll() {
-        //假设Dao层需要修改，则这时候需要重写Dao
-        return Arrays.asList("1","2","3");
+        return Arrays.asList("4","5","6");
     }
 }
