@@ -14,16 +14,13 @@ import java.util.List;
  */
 public class HelloServiceImpl implements HelloService {
 
-    //测试
-    public static void main(String[] args) {
-        for (int i = 0;i<5;i++){
-            System.out.println(BeanFactory.getDao("HelloDao"));
-        }
-    }
-
     //注入Service
     //由工厂提供
+    //2 松耦合，编译之后仍然可以修改，程序具有扩张性
     private HelloDao helloDao = (HelloDao)BeanFactory.getDao("HelloDao");
+
+    //1 强耦合，编译之后无法修改，没有扩展性
+//    private HelloDao helloDao = new HelloDaoImpl();
 
     @Override
     public List<String> findAll() {
