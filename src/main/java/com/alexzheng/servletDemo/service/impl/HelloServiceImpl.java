@@ -14,9 +14,16 @@ import java.util.List;
  */
 public class HelloServiceImpl implements HelloService {
 
+    //测试
+    public static void main(String[] args) {
+        for (int i = 0;i<5;i++){
+            System.out.println(BeanFactory.getDao("HelloDao"));
+        }
+    }
+
     //注入Service
     //由工厂提供
-    private HelloDao helloDao = (HelloDao)BeanFactory.getDao();
+    private HelloDao helloDao = (HelloDao)BeanFactory.getDao("HelloDao");
 
     @Override
     public List<String> findAll() {
