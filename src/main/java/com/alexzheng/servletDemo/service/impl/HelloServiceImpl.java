@@ -16,7 +16,7 @@ public class HelloServiceImpl implements HelloService {
 
     //注入Service
     //由工厂提供
-    private HelloDao helloDao = BeanFactory.getDao();
+    private HelloDao helloDao = (HelloDao)BeanFactory.getDao();
 
     @Override
     public List<String> findAll() {
