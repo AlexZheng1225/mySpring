@@ -1,4 +1,4 @@
-//package com.alexzheng.spring.test;
+package com.alexzheng.spring.test;
 //
 //import javafx.application.Application;
 //import org.springframework.context.ApplicationContext;
@@ -10,7 +10,7 @@
 // * @Date 2021/2/3 21:23
 // * @Annotation
 // */
-//public class Test {
+public class Test {
 //    public static void main(String[] args) {
 //        //加载IOC容器-ApplicationContext 除了ApplicationContext还有BeanFactory
 //        //使用注解不能使用 new ClassPathXmlApplicationContext();
@@ -26,4 +26,4 @@
 //            System.out.println(applicationContext.getBean(beanDefinitionName));
 //        }
 //    }
-//}
+}
