@@ -14,11 +14,11 @@ public class MyAnnotationConfigApplicationContext {
         Set<BeanDefinition> beanDefinitions = findBeanDefinitions(pack);
     }
 
+    //需要返回一个集合，里面包含了传入包下的所有有注解的类
     public Set<BeanDefinition> findBeanDefinitions(String pack){
         //1.获取包下的所有类
         //2.遍历这些类，找到添加注解的类
         //3.将这些类封装成BeanDefinition，装载到集合中
-        
         return null;
     }
 
