@@ -2,9 +2,8 @@ package com.alexzheng.myspring;
 
 import com.alexzheng.myspring.annotation.Component;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 /**
  * @Author Alex Zheng
@@ -13,13 +12,59 @@ import java.util.Set;
  */
 public class MyAnnotationConfigApplicationContext {
 
+    private Map<String,Object> ioc = new HashMap<>();
+
     public MyAnnotationConfigApplicationContext(String pack) {
         //遍历包，找到目标类（原材料）
         Set<BeanDefinition> beanDefinitions = findBeanDefinitions(pack);
+        //根据原材料创建Bean
+        createObject(beanDefinitions);
+
     }
 
-    //需要返回一个集合，里面包含了传入包下的所有有注解的类
-    public Set<BeanDefinition> findBeanDefinitions(String pack){
+    /**
+     * 通过beanName获取对象
+     * @param beanName
+     * @return
+     */
+    public Object getBean(String beanName){
+        return ioc.get(beanName);
+    }
+
+    /**
+     * 根据原材料创建BeanDefinition
+     * @param beanDefinitions
+     */
+    private void createObject(Set<BeanDefinition> beanDefinitions){
+        Iterator<BeanDefinition> iterator = beanDefinitions.iterator();
+        while (iterator.hasNext()){
+            BeanDefinition beanDefinition = iterator.next();
+            //先拿到class 才能创建对象
+            Class clazz = beanDefinition.getBeanClass();
+            String beanName = beanDefinition.getBeanName();
+            try {
+                //获取对象
+                Object object = clazz.getConstructor().newInstance();
+                //将对象存入缓存中
+                ioc.put(beanName,object);
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 返回一个集合，里面包含了传入包下的所有有注解的类
+     * @param pack
+     * @return
+     */
+    private Set<BeanDefinition> findBeanDefinitions(String pack){
         //1.获取包下的所有类
         Set<Class<?>> classes = MyTools.getClasses(pack);
         Iterator<Class<?>> iterator = classes.iterator();
@@ -44,7 +89,7 @@ public class MyAnnotationConfigApplicationContext {
                 }
                 //3.将这些类封装成BeanDefinition，装载到集合中
                 beanDefinitions.add(new BeanDefinition(beanName,clazz));
-                System.out.println(beanName);
+//                System.out.println(beanName);
             }
         }
         return beanDefinitions;
