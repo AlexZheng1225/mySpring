@@ -1,5 +1,7 @@
 package com.alexzheng.myspring;
 
+import com.alexzheng.myspring.annotation.Component;
+
 import java.util.Iterator;
 import java.util.Set;
 
@@ -21,9 +23,13 @@ public class MyAnnotationConfigApplicationContext {
         Set<Class<?>> classes = MyTools.getClasses(pack);
         Iterator<Class<?>> iterator = classes.iterator();
         while (iterator.hasNext()){
-            System.out.println(iterator.next());
+            //2.遍历这些类，找到添加注解的类
+            Class<?> clazz = iterator.next();
+            Component componentAnnotation = clazz.getAnnotation(Component.class); //查询是否带有注解
+            if (componentAnnotation != null){
+                System.out.println(clazz+"添加了Component注解");
+            }
         }
-        //2.遍历这些类，找到添加注解的类
         //3.将这些类封装成BeanDefinition，装载到集合中
         return null;
     }
