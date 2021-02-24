@@ -1,8 +1,11 @@
 package com.alexzheng.myspring;
 
 import com.alexzheng.myspring.annotation.Component;
+import com.alexzheng.myspring.annotation.Value;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -45,7 +48,47 @@ public class MyAnnotationConfigApplicationContext {
             try {
                 //获取对象
                 Object object = clazz.getConstructor().newInstance();
-                //将对象存入缓存中
+                //先完成属性的赋值
+                //获取类中的所有成员属性
+                Field[] declaredFields = clazz.getDeclaredFields();
+                for(Field declaredField : declaredFields){
+                    //判断属性有无添加@value注解
+                    Value annotation = declaredField.getAnnotation(Value.class);
+                    //则有注解
+                    if (annotation != null){
+                        String value = annotation.value();
+                        //获取成员变量名
+                        String fileName = declaredField.getName();
+                        //使用Set方法进行赋值，要拼出一个Set方法，例如setId
+                        String methodName = "set" + fileName.substring(0,1).toUpperCase()+fileName.substring(1);
+//                        System.out.println(methodName);
+                        //传入两个参数，set方法名和变量类型
+                        Method method = clazz.getMethod(methodName, declaredField.getType());
+                        //数据类型转换 [将@Value注解中的String类型值转化为其变量所对应的值]
+                        Object val = null;
+                        //打印出所有变量类型名
+//                        System.out.println(declaredField.getType().getName());
+                        //使用switch
+                        switch (declaredField.getType().getName()){
+                            case "java.lang.Integer":
+                                val = Integer.parseInt(value);
+                                break;
+                            case "java.lang.String":
+                                val = value;
+                                break;
+                            case "java.lang.Float":
+                                val = Float.parseFloat(value);
+                                break;
+                            case "java.lang.Double":
+                                val = Double.parseDouble(value);
+                                break;
+                        }
+                        //不要直接使用value，会发生变量类型不匹配的问题，使用已经调整过的val
+//                        method.invoke(object,value);
+                        method.invoke(object,val);
+                    }
+                }
+                //再将对象存入缓存中
                 ioc.put(beanName,object);
             } catch (InstantiationException e) {
                 e.printStackTrace();
