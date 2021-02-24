@@ -11,6 +11,6 @@ public class Test {
     public static void main(String[] args) {
         MyAnnotationConfigApplicationContext applicationContext = new MyAnnotationConfigApplicationContext("com.alexzheng.myspring.entity");
         System.out.println(applicationContext.getBean("account"));
-        System.out.println(applicationContext.getBean("order"));
+        System.out.println(applicationContext.getBean("myOrder"));
     }
 }

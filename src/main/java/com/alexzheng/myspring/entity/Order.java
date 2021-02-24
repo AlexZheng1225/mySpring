@@ -10,7 +10,7 @@ import lombok.Data;
  * @Annotation
  */
 @Data
-@Component
+@Component("myOrder")
 public class Order {
 
     @Value("xxxxxxx")

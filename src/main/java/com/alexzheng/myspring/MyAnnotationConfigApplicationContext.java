@@ -1,6 +1,8 @@
 package com.alexzheng.myspring;
 
+import com.alexzheng.myspring.annotation.Autowired;
 import com.alexzheng.myspring.annotation.Component;
+import com.alexzheng.myspring.annotation.Qualifier;
 import com.alexzheng.myspring.annotation.Value;
 
 import java.lang.reflect.Field;
@@ -23,6 +25,63 @@ public class MyAnnotationConfigApplicationContext {
         //根据原材料创建Bean
         createObject(beanDefinitions);
 
+        //自动装载
+        autowiredObject(beanDefinitions);
+
+    }
+
+    /**
+     * 自动装载 @Autowired @Qualifier
+     * @param beanDefinitions
+     */
+    public void autowiredObject(Set<BeanDefinition> beanDefinitions){
+        Iterator<BeanDefinition> iterator = beanDefinitions.iterator();
+        while (iterator.hasNext()){
+//            System.out.println(iterator.next());
+            BeanDefinition beanDefinition = iterator.next();
+            //获取Class
+            Class clazz = beanDefinition.getBeanClass();
+            //通过Class获取成员变量名
+            Field[] declaredFields = clazz.getDeclaredFields();
+            for (Field declareField:declaredFields){
+                //旁段field有无添加Autowired注解
+                Autowired annotation = declareField.getAnnotation(Autowired.class);
+                if (annotation != null){
+                    //开始自动装载
+                    //判断Qualifier
+                    Qualifier qualifier = declareField.getAnnotation(Qualifier.class);
+                    if (qualifier != null){
+                        //byName
+                        try {
+                            //获取qualifier的值，然后再从IOC里面去取
+                            String value = qualifier.value();
+                            //这里获取的bean是order，后面要将其注入到对象中
+                            Object bean = getBean(value);
+//                        System.out.println(bean);
+                            //获取成员变量名
+                            String filedName = declareField.getName();
+                            //使用Set方法进行赋值，要拼出一个Set方法，例如setId
+                            String methodName = "set" + filedName.substring(0, 1).toUpperCase() + filedName.substring(1);
+                            //传入两个参数，set方法名和变量类型
+                            Method method = clazz.getMethod(methodName, declareField.getType());
+//                            beanDefinition已经拿到了，从里面那处名字，再到缓存里面取
+                            Object object = getBean(beanDefinition.getBeanName());
+                            //object是指Account对象，bean是Account对象中的Order对象，装入
+                            method.invoke(object,bean);
+                        } catch (NoSuchMethodException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        //byType
+
+                    }
+                }
+            }
+        }
     }
 
     /**

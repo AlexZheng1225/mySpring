@@ -1,6 +1,8 @@
 package com.alexzheng.myspring.entity;
 
+import com.alexzheng.myspring.annotation.Autowired;
 import com.alexzheng.myspring.annotation.Component;
+import com.alexzheng.myspring.annotation.Qualifier;
 import com.alexzheng.myspring.annotation.Value;
 import lombok.Data;
 
@@ -21,4 +23,8 @@ public class account {
 
     @Value("23")
     private Integer age;
+
+    @Autowired
+    @Qualifier("myOrder")
+    private Order order;
 }
